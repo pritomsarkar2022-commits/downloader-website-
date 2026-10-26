@@ -1,0 +1,8 @@
+# Defence in depth: if the root rules are ignored by the host, these folders still refuse to serve.
+<IfModule mod_authz_core.c>
+  Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+  Order allow,deny
+  Deny from all
+</IfModule>

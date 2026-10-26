@@ -1,0 +1,7 @@
+# The files here are written and tested with LF. Keep them that way in a clone
+# on Windows, so a checkout still matches what was run.
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.ico binary
+*.svg text eol=lf

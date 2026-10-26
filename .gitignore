@@ -1,0 +1,15 @@
+# Runtime data: built mp4 files, job records, rate limit buckets, throwaway certs.
+# It is written by the app and must never be in the repository.
+storage/
+
+# Downloads produced by the live test runs.
+tests/out/
+
+# Captured third party media, plus the one stream key that decrypts a sample.
+# See tests/fixtures/README.md for how to regenerate them locally.
+tests/fixtures/*
+!tests/fixtures/README.md
+
+*.log
+.DS_Store
+Thumbs.db

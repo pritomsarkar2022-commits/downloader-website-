@@ -1,0 +1,55 @@
+# Hostinger shared hosting (Apache/LiteSpeed). Works with or without this file:
+# the app also answers plain ?r=... query urls.
+
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # Never serve application internals over http.
+  RewriteRule ^(lib|config|views|tests|storage)(/|$) - [F,L]
+
+  # Pretty endpoints.
+  RewriteRule ^api/analyze$ index.php?r=analyze [L,QSA]
+  RewriteRule ^api/relay$ index.php?r=relay [L,QSA]
+  RewriteRule ^health$ index.php?r=health [L,QSA]
+  RewriteRule ^robots\.txt$ index.php?r=robots [L]
+  RewriteRule ^sitemap\.xml$ index.php?r=sitemap [L]
+
+  # Everything else is the single front controller.
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^ index.php [L,QSA]
+</IfModule>
+
+# Long downloads need more than the default apache timeouts on shared plans.
+<IfModule mod_php.c>
+  php_value max_execution_time 300
+  php_value memory_limit 256M
+</IfModule>
+
+<FilesMatch "\.(json|log|lock)$">
+  Require all denied
+</FilesMatch>
+
+# Compress the text the page is made of. Video bytes are left alone on purpose:
+# they are already compressed, and deflating them only burns the shared CPU quota.
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/css application/javascript application/json image/svg+xml
+</IfModule>
+
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/css "access plus 30 days"
+  ExpiresByType application/javascript "access plus 30 days"
+  ExpiresByType image/svg+xml "access plus 30 days"
+  ExpiresByType image/png "access plus 30 days"
+  ExpiresByType image/jpeg "access plus 30 days"
+  ExpiresByType text/html "access plus 0 seconds"
+</IfModule>
+
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
